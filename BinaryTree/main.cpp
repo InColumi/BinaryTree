@@ -40,9 +40,19 @@ class BinaryTree
 		_root = AddNode(value, _root);
 	}
 
-	void ShowInfo()
+	void ShowTreeInSymmetrical()
 	{
-		ShowTree(_root);
+		PrintSymmetrical(_root);
+	}
+
+	void ShowTreeInStraight()
+	{
+		PrintStraight(_root);
+	}
+
+	void ShowTreeInRevers()
+	{
+		PrintRevers(_root);
 	}
 
 	void DeleteTree()
@@ -79,24 +89,51 @@ class BinaryTree
 		}
 		return tree;
 	}
-
-	void ShowTree(Node* node, int level = 0)
+	
+	void PrintSymmetrical(Node* node, int level = 0)
 	{
-		if(node != NULL)
+		if(node)
 		{
-			ShowTree(node->Left, level + 1);
-			for(int i = 0; i < level; i++)
-			{
-				cout << "    ";
-			}
-			cout << node->Value << endl;
-			ShowTree(node->Right, level + 1);
+			PrintSymmetrical(node->Left, level + 1);
+			ShowNode(level, node->Value);
+			PrintSymmetrical(node->Right, level + 1);
 		}
+	}
+
+	void PrintStraight(Node* node, int level = 0)
+	{
+		if(node)
+		{
+			ShowNode(level, node->Value);
+			PrintStraight(node->Left, level + 1);
+			PrintStraight(node->Right, level + 1);
+		}
+	}
+
+	void PrintRevers(Node* node, int level = 0)
+	{
+		if(node)
+		{
+			PrintRevers(node->Left, level + 1);
+			PrintRevers(node->Right, level + 1);
+			ShowNode(level, node->Value);
+		}
+	}
+
+	void ShowNode(int level, int value)
+	{
+		for(int i = 0; i < level; i++)
+		{
+			cout << "\t";
+		}
+		cout << value << endl;
 	}
 };
 
 int main()
 {
+	setlocale(LC_ALL, "rus");
+
 	BinaryTree tree;
 	srand(time(0));
 	
@@ -104,7 +141,14 @@ int main()
 	{
 		tree.AddValue(1 +rand() % 100);
 	}
-
-	tree.ShowInfo();
+	cout << "Вывод дерева в обратном порядке:\n";
+	tree.ShowTreeInRevers();
+	cout << "-----------------------------------------------------------" << endl;
+	cout << "Вывод дерева в прямом порядке:\n";
+	tree.ShowTreeInStraight();
+	cout << "-----------------------------------------------------------" << endl;
+	cout << "Вывод дерева в симметричном порядке:\n";
+	tree.ShowTreeInSymmetrical();
+	cout << "-----------------------------------------------------------" << endl;
 	return 0;
 }
