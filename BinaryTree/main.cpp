@@ -1,5 +1,7 @@
 #include <iostream>
 #include <ctime>
+#include <fstream>
+#include <string>
 
 using namespace std;
 
@@ -35,6 +37,23 @@ class BinaryTree
 		_root->Value = value;
 	}
 
+	void ReadFromFile(string fileName)
+	{
+		ifstream in;
+		in.open(fileName);
+		if(in.is_open() == false)
+		{
+			cout << "Файл не найден.\n";
+		}
+
+		string line;
+		
+		while(getline(in, line))
+		{
+			AddValue(stoi(line));
+		}
+		in.close();
+	}
 	void AddValue(int value)
 	{
 		_root = AddNode(value, _root);
@@ -137,10 +156,7 @@ int main()
 	BinaryTree tree;
 	srand(time(0));
 	
-	for(int i = 0; i < 20; i++)
-	{
-		tree.AddValue(1 +rand() % 100);
-	}
+	tree.ReadFromFile("TreeValues.txt");
 	cout << "Вывод дерева в обратном порядке:\n";
 	tree.ShowTreeInRevers();
 	cout << "-----------------------------------------------------------" << endl;
