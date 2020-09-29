@@ -24,17 +24,15 @@ class BinaryTree
 {
 	private:
 	Node* _root;
+	int _countLeftNodes;
+	int _countRightNodes;
 	public:
 
 	BinaryTree()
 	{
 		_root = NULL;
-	}
-
-	BinaryTree(int value)
-	{
-		_root = new Node;
-		_root->Value = value;
+		int _countLeftNodes = 0;
+		int _countRightNodes = 0;
 	}
 
 	void ReadFromFile(string fileName)
@@ -54,6 +52,7 @@ class BinaryTree
 		}
 		in.close();
 	}
+	
 	void AddValue(int value)
 	{
 		_root = AddNode(value, _root);
@@ -77,9 +76,69 @@ class BinaryTree
 	void DeleteTree()
 	{
 		DeleteNode(_root);
+		_countLeftNodes = 0;
+		_countRightNodes = 0;
+	}
+
+	void ShowInfo()
+	{
+		CountNodes();
+		if(IsSymmetrical())
+		{
+			cout << "Дерево является сбалансированным\n";
+		}
+		else
+		{
+			cout << "Дерево НЕ является сбалансированным\n";
+		}
 	}
 
 	private:
+
+	bool IsSymmetrical()
+	{
+		int differece = abs(_countLeftNodes - _countRightNodes);
+		return differece == 0 || differece == 1;
+	}
+
+	void CountNodes()
+	{
+		CountLeftAndRightNodes(_root);
+	}
+
+	void  CountLeftNodes(Node* nodes)
+	{
+		if(nodes->Left != NULL)
+		{
+			CountLeftNodes(nodes->Left);
+			++_countLeftNodes;
+		}
+		else if(nodes->Right != NULL)
+		{
+			CountLeftNodes(nodes->Right);
+			++_countLeftNodes;
+		}
+	}
+
+	void CountRightNodes(Node* nodes)
+	{
+		if(nodes->Right != NULL)
+		{
+			CountRightNodes(nodes->Right);
+			++_countRightNodes;
+		}
+		else if(nodes->Left != NULL)
+		{
+			CountRightNodes(nodes->Left);
+			++_countRightNodes;
+		}
+	}
+
+	void CountLeftAndRightNodes(Node* nodes)
+	{
+		CountLeftNodes(nodes);
+		CountRightNodes(nodes);
+	}
 
 	void DeleteNode(Node* node)
 	{
@@ -154,9 +213,9 @@ int main()
 	setlocale(LC_ALL, "rus");
 
 	BinaryTree tree;
-	srand(time(0));
 	
 	tree.ReadFromFile("TreeValues.txt");
+
 	cout << "Вывод дерева в обратном порядке:\n";
 	tree.ShowTreeInRevers();
 	cout << "-----------------------------------------------------------" << endl;
@@ -166,5 +225,7 @@ int main()
 	cout << "Вывод дерева в симметричном порядке:\n";
 	tree.ShowTreeInSymmetrical();
 	cout << "-----------------------------------------------------------" << endl;
+
+	tree.ShowInfo();
 	return 0;
 }
